@@ -11,12 +11,7 @@ console.log(DOMstuff);
 //dueDate (date-fns package for formatting)
 //priority
 
-const toDoItemFactory = (
-  dueDate,
-  name = "No Name",
-  description = "",
-  priority = "low"
-) => {
+const toDoItemFactory = (name, description, dueDate, priority = "low") => {
   return {
     name,
     dueDate,
@@ -44,7 +39,11 @@ const item2 = toDoItemFactory(
 function createToDoItem() {
   console.group("createToDoItem");
   console.info("inside the createToDoItem function");
-  let newItem = toDoItemFactory();
+  let itemName = document.querySelector("#item-name").value;
+  let itemDescription = document.querySelector("#item-description").value;
+  let itemDueDate = document.querySelector("#item-due-date").valueAsDate;
+  let newItem = toDoItemFactory(itemName, itemDescription, itemDueDate);
+
   itemsArray.push(newItem);
   console.table(itemsArray);
   console.log("the DOM stuff will follow now");
