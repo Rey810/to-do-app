@@ -1,7 +1,3 @@
-// /NEXT: SORT OUT SOME ORGANIZATIONAL STUFF
-// /THEN START ON ADDING ITEMS TO A PROJECT
-// /GET WEBPACK WORKING
-
 import { DOMstuff } from "./DOMstuff.js";
 console.log(
   "Beneath this is the imported DOMstuff object and it's encapsulated functions"

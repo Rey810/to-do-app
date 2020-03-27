@@ -1,16 +1,16 @@
 export const DOMstuff = {
   createItemsContainer: () => {
     console.info("Inside the DOMstuff.displayToDoItems");
-    let itemContainerSection;
+    let itemsContainer;
     console.group("Checks for item container and creates if necessary");
     //creates a container for the item if it doesn't already exist
     if (!document.querySelector("#item-container")) {
-      itemContainerSection = document.createElement("section");
-      itemContainerSection.id = "item-container";
-      document.body.appendChild(itemContainerSection);
+      itemsContainer = document.createElement("section");
+      itemsContainer.id = "item-container";
+      document.body.appendChild(itemsContainer);
       console.log("itemContainer didn't exist but now does");
     } else {
-      itemContainerSection = document.querySelector("#item-container");
+      itemsContainer = document.querySelector("#item-container");
       console.log("itemContainer already existed so wasn't created again");
     }
     console.groupEnd();
@@ -21,11 +21,11 @@ export const DOMstuff = {
     //add items to container
     console.group("Creates items and appends them");
     console.time("Time to build all items and append them");
-    let itemContainerSection = document.querySelector("#item-container");
+    let itemsContainer = document.querySelector("#item-container");
     itemsArray.map(item => {
-      const createItemDiv = () => {
+      const createItemInDiv = () => {
         //create the div that will hold an item
-        console.info("Inside the createItemDiv");
+        console.info("Inside the createItemInDiv");
         let itemDiv = document.createElement("div");
         itemDiv.classList.add("item");
         itemDiv.id = itemsArray.indexOf(item);
@@ -36,12 +36,13 @@ export const DOMstuff = {
         <h4>${item.description}</h4>
         <h4>${item.priority}`
         );
-        itemContainerSection.appendChild(itemDiv);
+        itemsContainer.appendChild(itemDiv);
         console.log(`Item div with name, ${item.name}, created`);
       };
 
       {
-        let createdItemIds = [...itemContainerSection.childNodes].map(item =>
+        //contains the ids of all the created items
+        let createdItemIds = [...itemsContainer.childNodes].map(item =>
           parseInt(item.id)
         );
         if (createdItemIds.includes(itemsArray.indexOf(item))) {
@@ -63,7 +64,7 @@ export const DOMstuff = {
             )} in the itemsArray was not found among the createdItemIds`
           );
           console.log(`So item ${itemsArray.indexOf(item)} will be created`);
-          createItemDiv();
+          createItemInDiv();
           console.groupEnd();
         }
       }
