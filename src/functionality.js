@@ -1,3 +1,7 @@
+// /NEXT: SORT OUT SOME ORGANIZATIONAL STUFF
+// /THEN START ON ADDING ITEMS TO A PROJECT
+// /GET WEBPACK WORKING
+
 import { DOMstuff } from "./DOMstuff.js";
 console.log(
   "Beneath this is the imported DOMstuff object and it's encapsulated functions"
@@ -45,18 +49,19 @@ function createToDoItem() {
   console.group("createToDoItem");
   console.info("inside the createToDoItem function");
   let newItem = toDoItemFactory();
-  itemContainer.push(newItem);
-  console.table(itemContainer);
+  itemsArray.push(newItem);
+  console.table(itemsArray);
   console.log("the DOM stuff will follow now");
   console.groupEnd();
   console.time("Time to do DOM stuff for a new item's creation");
-  DOMstuff.displayToDoItems(itemContainer);
+  DOMstuff.createItemsContainer();
+  DOMstuff.createItem(itemsArray);
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 }
 
 let createItemButton = document.querySelector("#create");
 createItemButton.addEventListener("click", createToDoItem);
-let itemContainer = [];
+let itemsArray = [];
 
 //Projects or Lists
 //start off with a default list
