@@ -35,6 +35,25 @@ const item2 = toDoItemFactory(
   "low"
 );
 
+function newItemForm() {
+  //when a button is clicked then the new form should be generated in
+  console.info("Inside the newItemForm");
+
+  //toggles DOM existence of new item form
+  !document.querySelector("#new-item-form")
+    ? DOMstuff.createNewItemForm()
+    : DOMstuff.removeItemFromDOM(
+        "#new-item-form",
+        "#create-new-item-container"
+      );
+
+  // only adds an event listener if the button exists
+  if (document.querySelector("#create")) {
+    let createItemButton = document.querySelector("#create");
+    createItemButton.addEventListener("click", createToDoItem);
+  }
+}
+
 //sample of an item creation attached to an eventlistener
 function createToDoItem() {
   console.group("createToDoItem");
@@ -42,7 +61,16 @@ function createToDoItem() {
   let itemName = document.querySelector("#item-name").value;
   let itemDescription = document.querySelector("#item-description").value;
   let itemDueDate = document.querySelector("#item-due-date").valueAsDate;
-  let newItem = toDoItemFactory(itemName, itemDescription, itemDueDate);
+
+  let itemPriority = [...document.getElementsByName("priority")].filter(
+    priority => priority.checked
+  )[0].id;
+  let newItem = toDoItemFactory(
+    itemName,
+    itemDescription,
+    itemDueDate,
+    itemPriority
+  );
 
   itemsArray.push(newItem);
   console.table(itemsArray);
@@ -54,9 +82,10 @@ function createToDoItem() {
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 }
 
-let createItemButton = document.querySelector("#create");
-createItemButton.addEventListener("click", createToDoItem);
 let itemsArray = [];
+
+let newItemButton = document.querySelector("#new-item");
+newItemButton.addEventListener("click", newItemForm);
 
 //Projects or Lists
 //start off with a default list

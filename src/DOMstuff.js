@@ -1,4 +1,39 @@
 export const DOMstuff = {
+  //the form for to-do item info
+  createNewItemForm: () => {
+    console.info("Inside the createNewItemForm");
+    let newItemForm = document.createElement("div");
+    newItemForm.id = "new-item-form";
+    newItemForm.insertAdjacentHTML(
+      "afterbegin",
+      `
+    <input id="item-name" type="text" placeholder="Enter a title" />
+    <input
+      id="item-description"
+      type="text"
+      placeholder="What do you need to do?"
+    />
+    <input type="date" id="item-due-date" value="2020-03-27" min="2020-03-25" />
+    <input type="radio" name="priority" id="low" checked />
+    <input type="radio" name="priority" id="medium" />
+    <input type="radio" name="priority" id="high" />
+    <button id="create">Create an Item</button>`
+    );
+    document
+      .querySelector("#create-new-item-container")
+      .appendChild(newItemForm);
+    console.log("Form created");
+  },
+
+  removeItemFromDOM: (childID, parentID) => {
+    console.info("Inside the removeItemFromDOM");
+    document
+      .querySelector(parentID)
+      .removeChild(document.querySelector(childID));
+    console.log(`Child: ${childID} removed from Parent: ${parentID}`);
+  },
+
+  //this will hold all the items
   createItemsContainer: () => {
     console.info("Inside the DOMstuff.displayToDoItems");
     let itemsContainer;
