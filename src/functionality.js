@@ -3,6 +3,7 @@ console.log(
   "Beneath this is the imported DOMstuff object and it's encapsulated functions"
 );
 console.log(DOMstuff);
+
 //To Do objects
 //create dynamically using a factory function
 //properties:
@@ -11,29 +12,30 @@ console.log(DOMstuff);
 //dueDate (date-fns package for formatting)
 //priority
 
-const toDoItemFactory = (name, description, dueDate, priority = "low") => {
+const toDoItemFactory = (
+  name,
+  description,
+  dueDate,
+  parentID,
+  priority = "low"
+) => {
   return {
     name,
-    dueDate,
     description,
+    dueDate,
+    parentID,
     priority
   };
 };
 
-//sample items
-const item1 = toDoItemFactory(
-  "First Item",
-  "01-20-2020",
-  "This is an item",
-  "high"
-);
+const projectFactory = (id, itemsOfProject = []) => {
+  return { id, itemsOfProject };
+};
 
-const item2 = toDoItemFactory(
-  "Second Item",
-  "02-20-2020",
-  "This is the second item",
-  "low"
-);
+//this stuff runs immediately
+let itemsArray = [];
+//check if an array or a hash is better
+let projectsArray = [];
 
 function newItemForm() {
   //when a button is clicked then the new form should be generated in
@@ -60,20 +62,28 @@ function createToDoItem() {
   console.info("inside the createToDoItem function");
   let itemName = document.querySelector("#item-name").value;
   let itemDescription = document.querySelector("#item-description").value;
+  let itemParentID = document.querySelector(".active").id;
   let itemDueDate = document.querySelector("#item-due-date").valueAsDate;
-
   let itemPriority = [...document.getElementsByName("priority")].filter(
     priority => priority.checked
   )[0].id;
+
   let newItem = toDoItemFactory(
     itemName,
     itemDescription,
     itemDueDate,
+    itemParentID,
     itemPriority
   );
 
   itemsArray.push(newItem);
   console.table(itemsArray);
+  //use this somehow to add a newItem to the right project
+  // Object.entries(projectsHash).forEach(project => {
+  //   console.table(project);
+  //   console.log(project[1].itemsOfProject);
+  // });
+
   console.log("the DOM stuff will follow now");
   console.groupEnd();
   console.time("Time to do DOM stuff for a new item's creation");
@@ -82,11 +92,15 @@ function createToDoItem() {
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 }
 
-let itemsArray = [];
+//add event listeners to each project div that exists
+let projects = [...document.querySelectorAll(".projects")];
+projects.map(projectDiv =>
+  projectDiv.addEventListener("click", () => {
+    DOMstuff.toggleActiveClass(projectDiv, projects);
+    //DOMstuff.toggleDisplay(itemsArray, projectDiv);
+  })
+);
 
+//New Item button
 let newItemButton = document.querySelector("#new-item");
 newItemButton.addEventListener("click", newItemForm);
-
-//Projects or Lists
-//start off with a default list
-//create dynamically

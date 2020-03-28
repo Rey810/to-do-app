@@ -51,13 +51,21 @@ export const DOMstuff = {
     console.groupEnd();
   },
   //creates items to populate the item
-  createItem: itemsArray => {
+  createItem: arrayOfItems => {
     console.info("Inside the DOMstuff.createItem");
     //add items to container
     console.group("Creates items and appends them");
     console.time("Time to build all items and append them");
     let itemsContainer = document.querySelector("#item-container");
-    itemsArray.map(item => {
+
+    let itemsArray = arrayOfItems;
+    //if (project != "") {
+    //  console.log("About to perform the filter function");
+    //  itemsArray = arrayOfItems.filter(item => item.parentID == project);
+    //}
+
+    arrayOfItems.map(item => {
+      //only gets called once an item is found in the array that doesn't already exist in the DOM
       const createItemInDiv = () => {
         //create the div that will hold an item
         console.info("Inside the createItemInDiv");
@@ -66,10 +74,11 @@ export const DOMstuff = {
         itemDiv.id = itemsArray.indexOf(item);
         itemDiv.insertAdjacentHTML(
           "afterbegin",
-          `<h4>${item.name}</h4>
-        <h4>${item.dueDate}</h4>
-        <h4>${item.description}</h4>
-        <h4>${item.priority}`
+          `<h4>Title: ${item.name}</h4>
+        <h4>Due Date:${item.dueDate}</h4>
+        <h4>Description:${item.description}</h4>
+        <h4>Project:${item.parentID}</h4>
+        <h4>Priority:${item.priority}`
         );
         itemsContainer.appendChild(itemDiv);
         console.log(`Item div with name, ${item.name}, created`);
@@ -107,5 +116,15 @@ export const DOMstuff = {
 
     console.timeEnd("Time to build all items and append them");
     console.groupEnd();
+  },
+
+  toggleActiveClass: (selectedProject, projects) => {
+    console.info("Inside the toggleActiveClass");
+    console.log(`${selectedProject.id} project was clicked`);
+    console.table(projects, ["id"]);
+    projects.map(project => project.classList.remove("active"));
+    selectedProject.classList.add("active");
   }
+
+  // toggleDisplay:
 };
