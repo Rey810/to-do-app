@@ -35,7 +35,10 @@ const projectFactory = (id, itemsOfProject = []) => {
 //this stuff runs immediately
 let itemsArray = [];
 //check if an array or a hash is better
-let projectsArray = [];
+
+let defaultProject = projectFactory("default");
+let anotherProject = projectFactory("another");
+let projectsHash = { defaultProject, anotherProject };
 
 function newItemForm() {
   //when a button is clicked then the new form should be generated in
@@ -78,11 +81,11 @@ function createToDoItem() {
 
   itemsArray.push(newItem);
   console.table(itemsArray);
-  //use this somehow to add a newItem to the right project
-  // Object.entries(projectsHash).forEach(project => {
-  //   console.table(project);
-  //   console.log(project[1].itemsOfProject);
-  // });
+
+  Object.entries(projectsHash)
+    .filter(project => project[1].id == `${itemParentID}`)[0][1]
+    .itemsOfProject.push(newItem);
+  console.log(Object.entries(projectsHash));
 
   console.log("the DOM stuff will follow now");
   console.groupEnd();
