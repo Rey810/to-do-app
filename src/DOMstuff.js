@@ -89,6 +89,8 @@ export const DOMstuff = {
         let createdItemIds = [...itemsContainer.childNodes].map(item =>
           parseInt(item.id)
         );
+
+        //checks whether an item in the array has been created or not
         if (createdItemIds.includes(itemsArray.indexOf(item))) {
           console.group("FOUND");
           console.log(
@@ -124,7 +126,54 @@ export const DOMstuff = {
     console.table(projects, ["id"]);
     projects.map(project => project.classList.remove("active"));
     selectedProject.classList.add("active");
-  }
+  },
 
-  // toggleDisplay:
+  createNewProjectForm: () => {
+    console.info("Inside createNewProjectForm");
+    let newProjectContainer = document.querySelector("#new-project-container");
+    newProjectContainer.removeChild(
+      document.querySelector("#create-new-project")
+    );
+    let newProjectForm = document.createElement("div");
+    newProjectForm.id = "new-project-form";
+    newProjectForm.insertAdjacentHTML(
+      "afterbegin",
+      `<input type="text" id="project-name" placeholder="New Project" />
+       <button id="submit-new-project">Add Project</button>`
+    );
+    newProjectContainer.appendChild(newProjectForm);
+  },
+
+  createProject: arrayOfProjects => {
+    console.log("Inside the createProject");
+    //check if project exists in the DOM already. If it doesn't, add it to the DOM
+    let projectsArray = arrayOfProjects;
+    let projects = document.querySelectorAll(".projects");
+
+    const addProject = project => {
+      console.log("Inside the addProject");
+      console.log(`Here is the id of the project to be added: ${project.id}`);
+      //add project to DOM here
+    };
+
+    console.group(
+      `Loops through nodeList (length: ${projects.length}) and adds projects to DOM (if not already added)`
+    );
+    let DOMprojectIDs = [];
+    //loops through the node list and only adds the IDS of projects
+    console.log("Inserting DOMprojectIDS into an array");
+    for (let i = 0; i < projects.length; i++) {
+      DOMprojectIDs.push(projects[i].id);
+    }
+    //only includes projects that are not in the DOM
+    let filteredProjectsArray = projectsArray.filter(
+      project => !DOMprojectIDs.includes(project.id),
+      console.log(
+        "Comparing each project in projectsArray to the DOMprojectIDS"
+      )
+    );
+    // each project here gets passed to the addProject function to add it to the DOM
+    filteredProjectsArray.map(project => addProject(project));
+    console.groupEnd();
+  }
 };

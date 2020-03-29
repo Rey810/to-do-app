@@ -38,9 +38,10 @@ let itemsArray = [];
 
 let defaultProject = projectFactory("default");
 let anotherProject = projectFactory("another");
-let projectsHash = { defaultProject, anotherProject };
+let notInDOM = projectFactory("third");
+let projectsArray = [defaultProject, anotherProject, notInDOM];
 
-function newItemForm() {
+const newItemForm = () => {
   //when a button is clicked then the new form should be generated in
   console.info("Inside the newItemForm");
 
@@ -57,10 +58,30 @@ function newItemForm() {
     let createItemButton = document.querySelector("#create");
     createItemButton.addEventListener("click", createToDoItem);
   }
-}
+};
+
+const newProjectForm = () => {
+  console.info("Inside newProjectForm");
+  DOMstuff.createNewProjectForm();
+
+  //add event listener to the button created in the createNewProjectForm
+  if (document.querySelector("#submit-new-project")) {
+    let submitNewProjectButton = document.querySelector("#submit-new-project");
+    submitNewProjectButton.addEventListener("click", createNewProject);
+  }
+};
+
+const createNewProject = () => {
+  console.log("Inside createNewProject");
+  let projectName = document.querySelector("#project-name").value;
+  let newProject = projectFactory(projectName);
+  projectsArray.push(newProject);
+  console.table(projectsArray);
+  DOMstuff.createProject(projectsArray);
+};
 
 //sample of an item creation attached to an eventlistener
-function createToDoItem() {
+const createToDoItem = () => {
   console.group("createToDoItem");
   console.info("inside the createToDoItem function");
   let itemName = document.querySelector("#item-name").value;
@@ -82,10 +103,10 @@ function createToDoItem() {
   itemsArray.push(newItem);
   console.table(itemsArray);
 
-  Object.entries(projectsHash)
-    .filter(project => project[1].id == `${itemParentID}`)[0][1]
-    .itemsOfProject.push(newItem);
-  console.log(Object.entries(projectsHash));
+  //Object.entries(projectsHash)
+  //  .filter(project => project[1].id == `${itemParentID}`)[0][1]
+  //  .itemsOfProject.push(newItem);
+  //console.log(Object.entries(projectsHash));
 
   console.log("the DOM stuff will follow now");
   console.groupEnd();
@@ -93,7 +114,7 @@ function createToDoItem() {
   DOMstuff.createItemsContainer();
   DOMstuff.createItem(itemsArray);
   console.timeEnd("Time to do DOM stuff for a new item's creation");
-}
+};
 
 //add event listeners to each project div that exists
 let projects = [...document.querySelectorAll(".projects")];
@@ -107,3 +128,7 @@ projects.map(projectDiv =>
 //New Item button
 let newItemButton = document.querySelector("#new-item");
 newItemButton.addEventListener("click", newItemForm);
+
+//New Project button
+let newProjectButton = document.querySelector("#create-new-project");
+newProjectButton.addEventListener("click", newProjectForm);
