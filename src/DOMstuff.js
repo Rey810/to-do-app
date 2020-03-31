@@ -1,3 +1,5 @@
+import * as util from "./util/util.js";
+
 export const DOMstuff = {
   //the form for to-do item info
   createNewItemForm: () => {
@@ -23,14 +25,6 @@ export const DOMstuff = {
       .querySelector("#create-new-item-container")
       .appendChild(newItemForm);
     console.log("Form created");
-  },
-
-  removeItemFromDOM: (childID, parentID) => {
-    console.info("Inside the removeItemFromDOM");
-    document
-      .querySelector(parentID)
-      .removeChild(document.querySelector(childID));
-    console.log(`Child: ${childID} removed from Parent: ${parentID}`);
   },
 
   //this will hold all the items
@@ -65,25 +59,6 @@ export const DOMstuff = {
     //}
 
     arrayOfItems.map(item => {
-      //only gets called once an item is found in the array that doesn't already exist in the DOM
-      const createItemInDiv = () => {
-        //create the div that will hold an item
-        console.info("Inside the createItemInDiv");
-        let itemDiv = document.createElement("div");
-        itemDiv.classList.add("item");
-        itemDiv.id = itemsArray.indexOf(item);
-        itemDiv.insertAdjacentHTML(
-          "afterbegin",
-          `<h4>Title: ${item.name}</h4>
-        <h4>Due Date:${item.dueDate}</h4>
-        <h4>Description:${item.description}</h4>
-        <h4>Project:${item.parentID}</h4>
-        <h4>Priority:${item.priority}`
-        );
-        itemsContainer.appendChild(itemDiv);
-        console.log(`Item div with name, ${item.name}, created`);
-      };
-
       {
         //contains the ids of all the created items
         let createdItemIds = [...itemsContainer.childNodes].map(item =>
@@ -110,7 +85,7 @@ export const DOMstuff = {
             )} in the itemsArray was not found among the createdItemIds`
           );
           console.log(`So item ${itemsArray.indexOf(item)} will be created`);
-          createItemInDiv();
+          util.createItemInDiv(item);
           console.groupEnd();
         }
       }
@@ -118,14 +93,6 @@ export const DOMstuff = {
 
     console.timeEnd("Time to build all items and append them");
     console.groupEnd();
-  },
-
-  toggleActiveClass: (selectedProject, projects) => {
-    console.info("Inside the toggleActiveClass");
-    console.log(`${selectedProject.id} project was clicked`);
-    console.table(projects, ["id"]);
-    projects.map(project => project.classList.remove("active"));
-    selectedProject.classList.add("active");
   },
 
   createNewProjectForm: () => {
@@ -139,9 +106,34 @@ export const DOMstuff = {
     newProjectForm.insertAdjacentHTML(
       "afterbegin",
       `<input type="text" id="project-name" placeholder="New Project" />
-       <button id="submit-new-project">Add Project</button>`
+      <button id="submit-new-project">Add Project</button>`
     );
     newProjectContainer.appendChild(newProjectForm);
+  },
+
+  addProject: project => {
+    console.log("Inside the addProject");
+    console.log(
+      `Here is the id of the project to be added to DOM: ${project.id}`
+    );
+    //add project to DOM here
+    let projectsContainer = document.querySelector("#all-projects");
+    let projectToAddToDOM = document.createElement("button");
+    projectToAddToDOM.className = "projects";
+    projectToAddToDOM.id = `${project.id.toLowerCase()}`;
+    projectToAddToDOM.textContent = `${project.id.toUpperCase()}`;
+    projectsContainer.appendChild(projectToAddToDOM);
+    //remove the active class from the other projects
+    //and make the new project the active one
+    util.toggleActiveClass(projectToAddToDOM);
+    //add an eventlistener to newly created project
+    //an anonymous function is used so that parameters can be passed
+    projectToAddToDOM.addEventListener("click", () =>
+      util.toggleActiveClass(projectToAddToDOM)
+    );
+    util.newListener(`#${projectToAddToDOM.id}`, "click", () => {
+      util.displayProjectItems(project);
+    });
   },
 
   createProject: arrayOfProjects => {
@@ -149,12 +141,6 @@ export const DOMstuff = {
     //check if project exists in the DOM already. If it doesn't, add it to the DOM
     let projectsArray = arrayOfProjects;
     let projects = document.querySelectorAll(".projects");
-
-    const addProject = project => {
-      console.log("Inside the addProject");
-      console.log(`Here is the id of the project to be added: ${project.id}`);
-      //add project to DOM here
-    };
 
     console.group(
       `Loops through nodeList (length: ${projects.length}) and adds projects to DOM (if not already added)`
@@ -165,15 +151,18 @@ export const DOMstuff = {
     for (let i = 0; i < projects.length; i++) {
       DOMprojectIDs.push(projects[i].id);
     }
+    console.log(DOMprojectIDs);
     //only includes projects that are not in the DOM
     let filteredProjectsArray = projectsArray.filter(
-      project => !DOMprojectIDs.includes(project.id),
-      console.log(
-        "Comparing each project in projectsArray to the DOMprojectIDS"
-      )
+      project => !DOMprojectIDs.includes(project.id)
     );
+    console.table(filteredProjectsArray);
     // each project here gets passed to the addProject function to add it to the DOM
-    filteredProjectsArray.map(project => addProject(project));
+    console.log(
+      `Number of projects to be added to DOM: ${filteredProjectsArray.length}`
+    );
+    //This will always be 1 or 0 in length
+    filteredProjectsArray.map(project => DOMstuff.addProject(project));
     console.groupEnd();
   }
 };

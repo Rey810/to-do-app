@@ -1,7 +1,10 @@
 import { DOMstuff } from "./DOMstuff.js";
+import * as util from "./util/util.js";
+
 console.log(
   "Beneath this is the imported DOMstuff object and it's encapsulated functions"
 );
+
 console.log(DOMstuff);
 
 //To Do objects
@@ -17,14 +20,16 @@ const toDoItemFactory = (
   description,
   dueDate,
   parentID,
-  priority = "low"
+  priority = "low",
+  id = util.uniqueNumber()
 ) => {
   return {
     name,
     description,
     dueDate,
     parentID,
-    priority
+    priority,
+    id
   };
 };
 
@@ -33,13 +38,11 @@ const projectFactory = (id, itemsOfProject = []) => {
 };
 
 //this stuff runs immediately
-let itemsArray = [];
-//check if an array or a hash is better
-
+//the initial items array is empty
+// the initial projects array contains the default project
+export let itemsArray = [];
 let defaultProject = projectFactory("default");
-let anotherProject = projectFactory("another");
-let notInDOM = projectFactory("third");
-let projectsArray = [defaultProject, anotherProject, notInDOM];
+let projectsArray = [defaultProject];
 
 const newItemForm = () => {
   //when a button is clicked then the new form should be generated in
@@ -48,10 +51,7 @@ const newItemForm = () => {
   //toggles DOM existence of new item form
   !document.querySelector("#new-item-form")
     ? DOMstuff.createNewItemForm()
-    : DOMstuff.removeItemFromDOM(
-        "#new-item-form",
-        "#create-new-item-container"
-      );
+    : util.removeItemFromDOM("#new-item-form", "#create-new-item-container");
 
   // only adds an event listener if the button exists
   if (document.querySelector("#create")) {
@@ -72,18 +72,37 @@ const newProjectForm = () => {
 };
 
 const createNewProject = () => {
-  console.log("Inside createNewProject");
-  let projectName = document.querySelector("#project-name").value;
-  let newProject = projectFactory(projectName);
-  projectsArray.push(newProject);
-  console.table(projectsArray);
-  DOMstuff.createProject(projectsArray);
+  console.info("Inside createNewProject");
+  let existingProjects = projectsArray;
+  //checks the name. If the name is empty, function returns after logging a message
+  let projectName = "";
+  if (document.querySelector("#project-name").value != "") {
+    projectName = document.querySelector("#project-name").value;
+  } else {
+    console.log("The project needs a name before it'll be created");
+    return;
+  }
+  //this continues only if there is a project name
+  let newProject = projectFactory(projectName.toLowerCase());
+  //only add newProject to existingProjects if the array does not include this project already
+  existingProjects.every(project => project.id != newProject.id)
+    ? existingProjects.push(newProject)
+    : console.warn(
+        `Project of id ${newProject.id} already exists in the existingProjects`
+      );
+  console.table(existingProjects);
+  //adds the project to the DOM
+  DOMstuff.createProject(existingProjects);
+  util.removeItemFromDOM("#new-project-form", "#new-project-container");
+  util.addButton("create-new-project", "New Project", "#new-project-container");
+  util.newListener("#create-new-project", "click", newProjectForm);
 };
 
 //sample of an item creation attached to an eventlistener
 const createToDoItem = () => {
   console.group("createToDoItem");
   console.info("inside the createToDoItem function");
+  let project = document.querySelector(".active");
   let itemName = document.querySelector("#item-name").value;
   let itemDescription = document.querySelector("#item-description").value;
   let itemParentID = document.querySelector(".active").id;
@@ -102,33 +121,38 @@ const createToDoItem = () => {
 
   itemsArray.push(newItem);
   console.table(itemsArray);
-
-  //Object.entries(projectsHash)
-  //  .filter(project => project[1].id == `${itemParentID}`)[0][1]
-  //  .itemsOfProject.push(newItem);
-  //console.log(Object.entries(projectsHash));
-
   console.log("the DOM stuff will follow now");
   console.groupEnd();
   console.time("Time to do DOM stuff for a new item's creation");
-  DOMstuff.createItemsContainer();
-  DOMstuff.createItem(itemsArray);
+  util.displayProjectItems(project);
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 };
 
+export const deleteItemFromArray = (itemToRemove, array) => {
+  console.info("Inside deleteItemFromArray");
+  console.warn(
+    `Item with name "${itemToRemove.name}" and id (${itemToRemove.id}) will be removed`
+  );
+  //mutates the original array to exclude the itemToRemove
+  itemsArray = array.filter(item => item.id != itemToRemove.id);
+  console.group("The array before and after the item has been removed");
+  console.table(array);
+  console.table(itemsArray);
+  console.groupEnd();
+};
 //add event listeners to each project div that exists
-let projects = [...document.querySelectorAll(".projects")];
-projects.map(projectDiv =>
-  projectDiv.addEventListener("click", () => {
-    DOMstuff.toggleActiveClass(projectDiv, projects);
-    //DOMstuff.toggleDisplay(itemsArray, projectDiv);
-  })
-);
+{
+  let projects = [...document.querySelectorAll(".projects")];
+  projects.map(project =>
+    project.addEventListener("click", () => {
+      util.toggleActiveClass(project);
+      util.displayProjectItems(project);
+    })
+  );
+}
 
 //New Item button
-let newItemButton = document.querySelector("#new-item");
-newItemButton.addEventListener("click", newItemForm);
+util.newListener("#new-item", "click", newItemForm);
 
 //New Project button
-let newProjectButton = document.querySelector("#create-new-project");
-newProjectButton.addEventListener("click", newProjectForm);
+util.newListener("#create-new-project", "click", newProjectForm);
