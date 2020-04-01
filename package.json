@@ -18,7 +18,9 @@
     "url": "https://github.com/Rey810/to-do-app/issues"
   },
   "homepage": "https://github.com/Rey810/to-do-app#readme",
-  "dependencies": {},
+  "dependencies": {
+    "date-fns": "^2.11.1"
+  },
   "devDependencies": {
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"

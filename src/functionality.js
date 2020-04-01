@@ -1,5 +1,6 @@
 import { DOMstuff } from "./DOMstuff.js";
 import * as util from "./util/util.js";
+import { format } from "date-fns";
 
 console.log(
   "Beneath this is the imported DOMstuff object and it's encapsulated functions"
@@ -21,6 +22,7 @@ const toDoItemFactory = (
   dueDate,
   parentID,
   priority = "low",
+  completed = false,
   id = util.uniqueNumber()
 ) => {
   return {
@@ -29,6 +31,7 @@ const toDoItemFactory = (
     dueDate,
     parentID,
     priority,
+    completed,
     id
   };
 };
@@ -42,7 +45,7 @@ const projectFactory = (id, itemsOfProject = []) => {
 // the initial projects array contains the default project
 export let itemsArray = [];
 let defaultProject = projectFactory("default");
-let projectsArray = [defaultProject];
+export let projectsArray = [defaultProject];
 
 const newItemForm = () => {
   //when a button is clicked then the new form should be generated in
@@ -60,24 +63,19 @@ const newItemForm = () => {
   }
 };
 
-const newProjectForm = () => {
-  console.info("Inside newProjectForm");
-  DOMstuff.createNewProjectForm();
-
-  //add event listener to the button created in the createNewProjectForm
-  if (document.querySelector("#submit-new-project")) {
-    let submitNewProjectButton = document.querySelector("#submit-new-project");
-    submitNewProjectButton.addEventListener("click", createNewProject);
-  }
-};
-
-const createNewProject = () => {
+export function createNewProject() {
   console.info("Inside createNewProject");
   let existingProjects = projectsArray;
   //checks the name. If the name is empty, function returns after logging a message
   let projectName = "";
+  let displayName;
   if (document.querySelector("#project-name").value != "") {
     projectName = document.querySelector("#project-name").value;
+    //save a new variable that still contains spaces
+    let rawName = projectName.replace(/[!@#$%^&*]/g, "");
+    displayName = rawName.replace(/[ ]{2,}/g, " ");
+    //removes special characters and spaces in the name
+    projectName = projectName.replace(/[ !@#$%^&*]/g, "");
   } else {
     console.log("The project needs a name before it'll be created");
     return;
@@ -92,21 +90,27 @@ const createNewProject = () => {
       );
   console.table(existingProjects);
   //adds the project to the DOM
-  DOMstuff.createProject(existingProjects);
+  DOMstuff.createProject(existingProjects, displayName);
+  //removes the new project form
   util.removeItemFromDOM("#new-project-form", "#new-project-container");
   util.addButton("create-new-project", "New Project", "#new-project-container");
-  util.newListener("#create-new-project", "click", newProjectForm);
-};
+  util.newListener("#create-new-project", "click", util.newProjectForm);
+}
 
 //sample of an item creation attached to an eventlistener
 const createToDoItem = () => {
   console.group("createToDoItem");
   console.info("inside the createToDoItem function");
+  //this captures the selected project ID
   let project = document.querySelector(".active");
   let itemName = document.querySelector("#item-name").value;
   let itemDescription = document.querySelector("#item-description").value;
   let itemParentID = document.querySelector(".active").id;
+
   let itemDueDate = document.querySelector("#item-due-date").valueAsDate;
+  //corrects the format for later use when displaying item due dates
+  itemDueDate = format(itemDueDate, "yyyy, MM, dd");
+
   let itemPriority = [...document.getElementsByName("priority")].filter(
     priority => priority.checked
   )[0].id;
@@ -128,16 +132,31 @@ const createToDoItem = () => {
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 };
 
-export const deleteItemFromArray = (itemToRemove, array) => {
+export const deleteItemFromArray = itemToRemove => {
   console.info("Inside deleteItemFromArray");
   console.warn(
     `Item with name "${itemToRemove.name}" and id (${itemToRemove.id}) will be removed`
   );
-  //mutates the original array to exclude the itemToRemove
-  itemsArray = array.filter(item => item.id != itemToRemove.id);
   console.group("The array before and after the item has been removed");
-  console.table(array);
   console.table(itemsArray);
+  //mutates the original array to exclude the itemToRemove
+  itemsArray = itemsArray.filter(item => item.id != itemToRemove.id);
+  console.table(itemsArray);
+  console.groupEnd();
+};
+
+export const deleteProjectFromArray = projectToRemove => {
+  console.info("Inside deleteProjectFromArray");
+  console.warn(
+    `Project with id "${projectToRemove.id}" and with ${projectToRemove.itemsOfProject.length} items will be removed`
+  );
+  console.group("The array before and after the project has been removed");
+  console.table(projectsArray);
+  //mutates the original array to exclude the projectToRemove
+  projectsArray = projectsArray.filter(
+    project => project.id != projectToRemove.id
+  );
+  console.table(projectsArray);
   console.groupEnd();
 };
 //add event listeners to each project div that exists
@@ -155,4 +174,4 @@ export const deleteItemFromArray = (itemToRemove, array) => {
 util.newListener("#new-item", "click", newItemForm);
 
 //New Project button
-util.newListener("#create-new-project", "click", newProjectForm);
+util.newListener("#create-new-project", "click", util.newProjectForm);

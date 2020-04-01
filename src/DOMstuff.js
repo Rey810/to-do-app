@@ -1,4 +1,5 @@
 import * as util from "./util/util.js";
+import { deleteProjectFromArray } from "./functionality";
 
 export const DOMstuff = {
   //the form for to-do item info
@@ -24,6 +25,7 @@ export const DOMstuff = {
     document
       .querySelector("#create-new-item-container")
       .appendChild(newItemForm);
+    document.querySelector("#item-due-date").valueAsDate = new Date();
     console.log("Form created");
   },
 
@@ -53,10 +55,6 @@ export const DOMstuff = {
     let itemsContainer = document.querySelector("#item-container");
 
     let itemsArray = arrayOfItems;
-    //if (project != "") {
-    //  console.log("About to perform the filter function");
-    //  itemsArray = arrayOfItems.filter(item => item.parentID == project);
-    //}
 
     arrayOfItems.map(item => {
       {
@@ -106,23 +104,50 @@ export const DOMstuff = {
     newProjectForm.insertAdjacentHTML(
       "afterbegin",
       `<input type="text" id="project-name" placeholder="New Project" />
-      <button id="submit-new-project">Add Project</button>`
+      <button id="submit-new-project">Add Project</button>
+      <button id="cancel-new-project">Cancel</button>`
     );
     newProjectContainer.appendChild(newProjectForm);
+    util.newListener("#cancel-new-project", "click", () => {
+      util.cancelNewProject(newProjectForm, newProjectContainer);
+    });
   },
 
-  addProject: project => {
+  addProject: (project, displayName) => {
     console.log("Inside the addProject");
     console.log(
       `Here is the id of the project to be added to DOM: ${project.id}`
     );
+    // clear items DOM
+    let itemsContainer;
+    if (document.querySelector("#item-container")) {
+      itemsContainer = document.querySelector("#item-container");
+      itemsContainer.innerHTML = "";
+    }
     //add project to DOM here
     let projectsContainer = document.querySelector("#all-projects");
+    let projectContainer = document.createElement("div");
     let projectToAddToDOM = document.createElement("button");
+    projectContainer.id = `project-${project.id.toLowerCase()}`;
     projectToAddToDOM.className = "projects";
-    projectToAddToDOM.id = `${project.id.toLowerCase()}`;
-    projectToAddToDOM.textContent = `${project.id.toUpperCase()}`;
-    projectsContainer.appendChild(projectToAddToDOM);
+    projectToAddToDOM.id = `${project.id}`;
+    projectToAddToDOM.textContent = displayName;
+    projectContainer.appendChild(projectToAddToDOM);
+    projectsContainer.appendChild(projectContainer);
+    //add a delete button
+    let button = document.createElement("button");
+    button.id = `project${util.uniqueNumber()}`;
+    button.classList.add("delete");
+    button.textContent = "Delete Project";
+    projectContainer.appendChild(button);
+    util.newListener(`#${button.id}`, "click", () => {
+      util.removeItemFromDOM(
+        `#${projectContainer.id}`,
+        `#${projectsContainer.id}`
+      );
+      deleteProjectFromArray(project);
+      util.activateDefaultProject();
+    });
     //remove the active class from the other projects
     //and make the new project the active one
     util.toggleActiveClass(projectToAddToDOM);
@@ -136,7 +161,7 @@ export const DOMstuff = {
     });
   },
 
-  createProject: arrayOfProjects => {
+  createProject: (arrayOfProjects, displayName) => {
     console.log("Inside the createProject");
     //check if project exists in the DOM already. If it doesn't, add it to the DOM
     let projectsArray = arrayOfProjects;
@@ -162,7 +187,9 @@ export const DOMstuff = {
       `Number of projects to be added to DOM: ${filteredProjectsArray.length}`
     );
     //This will always be 1 or 0 in length
-    filteredProjectsArray.map(project => DOMstuff.addProject(project));
+    filteredProjectsArray.map(project =>
+      DOMstuff.addProject(project, displayName)
+    );
     console.groupEnd();
   }
 };
