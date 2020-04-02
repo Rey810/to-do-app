@@ -46,9 +46,9 @@ export var projectsArray = [defaultProject];
 function loadData() {
   if (localStorage.getItem("projects")) {
     projectsArray = JSON.parse(localStorage.getItem("projects"));
+    DOMstuff.createProject(projectsArray);
   }
 
-  DOMstuff.createProject(projectsArray);
   if (localStorage.getItem("items")) {
     itemsArray = JSON.parse(localStorage.getItem("items"));
   } else {
