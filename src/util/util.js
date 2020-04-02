@@ -7,6 +7,8 @@ import { deleteItemFromArray } from "../functionality";
 import { createNewProject } from "../functionality";
 //import a date manipulation function from date-fns
 import distanceInWordsToNow from "date-fns/formatDistanceToNow/index.js";
+//import the function which creates and adds functionality to the new item form
+import { newItemForm } from "../functionality";
 
 export function toggleActiveClass(
   selectedProject,
@@ -156,7 +158,7 @@ export function uniqueNumber() {
 export function activateDefaultProject() {
   let defaultProject = document.querySelector("#default");
   defaultProject.classList.add("active");
-  displayProjectItems(defaultProject);
+  //displayProjectItems(defaultProject);
 }
 
 export function cancelNewProject(aNewProjectForm, aNewProjectContainer) {
@@ -177,4 +179,32 @@ export function newProjectForm() {
     let submitNewProjectButton = document.querySelector("#submit-new-project");
     submitNewProjectButton.addEventListener("click", createNewProject);
   }
+}
+
+export function createProjectHeader(project) {
+  //hide all projects
+  console.log("Inside createProjectHeader");
+  let projectsContainer = document.querySelector("#projects-container");
+  projectsContainer.style.display = "none";
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `
+    <div class="project-header-container"><i id="back-icon" class="fas fa-angle-down expand-icon fa-rotate-90"></i><h1 class="project-header" id="project-header-${project.id}">${project.id}</h1><section id="create-new-item-container">
+      <button id="new-item">New Item</button>
+    </section></div>
+    `
+  );
+  //New Item button
+  let newItem = document.querySelector("#new-item");
+  newItem.addEventListener("click", newItemForm);
+  let backIcon = document.querySelector("#back-icon");
+  backIcon.addEventListener("click", goBack);
+}
+
+function goBack() {
+  console.info("Inside goback");
+  let header = document.querySelector(".project-header-container");
+  document.body.removeChild(header);
+  document.querySelector("#projects-container").style.display = "unset";
+  document.body.removeChild(document.querySelector("#item-container"));
 }

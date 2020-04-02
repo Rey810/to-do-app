@@ -48,7 +48,7 @@ function loadData() {
     projectsArray = JSON.parse(localStorage.getItem("projects"));
   }
 
-  DOMstuff.displayProjects(projectsArray);
+  DOMstuff.createProject(projectsArray);
   if (localStorage.getItem("items")) {
     itemsArray = JSON.parse(localStorage.getItem("items"));
   } else {
@@ -56,7 +56,7 @@ function loadData() {
   }
 }
 
-const newItemForm = () => {
+export const newItemForm = () => {
   //when a button is clicked then the new form should be generated in
   console.info("Inside the newItemForm");
 
@@ -101,7 +101,7 @@ export function createNewProject() {
   localStorage.setItem("projects", JSON.stringify(projectsArray));
   console.table(existingProjects);
   //adds the project to the DOM
-  DOMstuff.createProject(existingProjects, displayName);
+  DOMstuff.createProject(existingProjects);
   //removes the new project form
   util.removeItemFromDOM("#new-project-form", "#new-project-container");
   util.addButton("create-new-project", "New Project", "#new-project-container");
@@ -180,13 +180,11 @@ export const deleteProjectFromArray = projectToRemove => {
   projects.map(project =>
     project.addEventListener("click", () => {
       util.toggleActiveClass(project);
+      util.createProjectHeader(project);
       util.displayProjectItems(project);
     })
   );
 }
-
-//New Item button
-util.newListener("#new-item", "click", newItemForm);
 
 //New Project button
 util.newListener("#create-new-project", "click", util.newProjectForm);

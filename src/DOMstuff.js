@@ -113,7 +113,7 @@ export const DOMstuff = {
     });
   },
 
-  addProject: (project, displayName) => {
+  addProject: project => {
     console.log("Inside the addProject");
     console.log(
       `Here is the id of the project to be added to DOM: ${project.id}`
@@ -131,7 +131,7 @@ export const DOMstuff = {
     projectContainer.id = `project-${project.id.toLowerCase()}`;
     projectToAddToDOM.className = "projects";
     projectToAddToDOM.id = `${project.id}`;
-    projectToAddToDOM.textContent = displayName;
+    projectToAddToDOM.textContent = `${project.id}`;
     projectContainer.appendChild(projectToAddToDOM);
     projectsContainer.appendChild(projectContainer);
     //add a delete button
@@ -153,9 +153,10 @@ export const DOMstuff = {
     util.toggleActiveClass(projectToAddToDOM);
     //add an eventlistener to newly created project
     //an anonymous function is used so that parameters can be passed
-    projectToAddToDOM.addEventListener("click", () =>
-      util.toggleActiveClass(projectToAddToDOM)
-    );
+    projectToAddToDOM.addEventListener("click", () => {
+      util.toggleActiveClass(projectToAddToDOM);
+      util.createProjectHeader(projectToAddToDOM);
+    });
     util.newListener(`#${projectToAddToDOM.id}`, "click", () => {
       util.displayProjectItems(project);
     });
