@@ -191,5 +191,26 @@ export const DOMstuff = {
       DOMstuff.addProject(project, displayName)
     );
     console.groupEnd();
+  },
+
+  displayProjects: arrayOfProjects => {
+    let projectsContainer = document.querySelector("#all-projects");
+    //prevents the default project from being displayed again
+    arrayOfProjects.splice(0, 1);
+    arrayOfProjects.forEach(project => {
+      let storedProjectButton = document.createElement("button");
+      storedProjectButton.id = `${project.id}`;
+      storedProjectButton.classList.add("projects");
+      storedProjectButton.textContent = `${project.id}`;
+
+      projectsContainer.appendChild(storedProjectButton);
+
+      storedProjectButton.addEventListener("click", () =>
+        util.toggleActiveClass(storedProjectButton)
+      );
+      util.newListener(`#${storedProjectButton.id}`, "click", () => {
+        util.displayProjectItems(storedProjectButton);
+      });
+    });
   }
 };

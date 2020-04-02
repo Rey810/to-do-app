@@ -8,14 +8,9 @@ console.log(
 
 console.log(DOMstuff);
 
-//To Do objects
-//create dynamically using a factory function
-//properties:
-//title
-//description
-//dueDate (date-fns package for formatting)
-//priority
-
+//this stuff runs immediately
+//the initial items array is empty
+// the initial projects array contains the default project
 const toDoItemFactory = (
   name,
   description,
@@ -39,13 +34,27 @@ const toDoItemFactory = (
 const projectFactory = (id, itemsOfProject = []) => {
   return { id, itemsOfProject };
 };
-
-//this stuff runs immediately
-//the initial items array is empty
-// the initial projects array contains the default project
 export let itemsArray = [];
 let defaultProject = projectFactory("default");
-export let projectsArray = [defaultProject];
+window.onload = loadData();
+
+//var is used to declare projectsArray globally so that it's available in loadData()
+//the projectsArray which the localStorage adds to will now include the defaultProject
+export var projectsArray = [defaultProject];
+
+//get local storage projects and items
+function loadData() {
+  if (localStorage.getItem("projects")) {
+    projectsArray = JSON.parse(localStorage.getItem("projects"));
+  }
+
+  DOMstuff.displayProjects(projectsArray);
+  if (localStorage.getItem("items")) {
+    itemsArray = JSON.parse(localStorage.getItem("items"));
+  } else {
+    console.log("No saved items");
+  }
+}
 
 const newItemForm = () => {
   //when a button is clicked then the new form should be generated in
@@ -88,6 +97,8 @@ export function createNewProject() {
     : console.warn(
         `Project of id ${newProject.id} already exists in the existingProjects`
       );
+  // save projects array for use in next session
+  localStorage.setItem("projects", JSON.stringify(projectsArray));
   console.table(existingProjects);
   //adds the project to the DOM
   DOMstuff.createProject(existingProjects, displayName);
@@ -124,6 +135,8 @@ const createToDoItem = () => {
   );
 
   itemsArray.push(newItem);
+  //save the items array for use in the next session
+  localStorage.setItem("items", JSON.stringify(itemsArray));
   console.table(itemsArray);
   console.log("the DOM stuff will follow now");
   console.groupEnd();
@@ -141,6 +154,7 @@ export const deleteItemFromArray = itemToRemove => {
   console.table(itemsArray);
   //mutates the original array to exclude the itemToRemove
   itemsArray = itemsArray.filter(item => item.id != itemToRemove.id);
+  localStorage.setItem("items", JSON.stringify(itemsArray));
   console.table(itemsArray);
   console.groupEnd();
 };
@@ -156,6 +170,7 @@ export const deleteProjectFromArray = projectToRemove => {
   projectsArray = projectsArray.filter(
     project => project.id != projectToRemove.id
   );
+  localStorage.setItem("projects", JSON.stringify(projectsArray));
   console.table(projectsArray);
   console.groupEnd();
 };
