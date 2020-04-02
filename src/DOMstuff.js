@@ -165,7 +165,7 @@ export const DOMstuff = {
   createProject: (arrayOfProjects, displayName) => {
     console.log("Inside the createProject");
     //check if project exists in the DOM already. If it doesn't, add it to the DOM
-    let projectsArray = arrayOfProjects;
+    let projectsArr = arrayOfProjects;
     let projects = document.querySelectorAll(".projects");
 
     console.group(
@@ -179,7 +179,7 @@ export const DOMstuff = {
     }
     console.log(DOMprojectIDs);
     //only includes projects that are not in the DOM
-    let filteredProjectsArray = projectsArray.filter(
+    let filteredProjectsArray = projectsArr.filter(
       project => !DOMprojectIDs.includes(project.id)
     );
     console.table(filteredProjectsArray);
