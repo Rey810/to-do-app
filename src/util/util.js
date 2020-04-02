@@ -52,21 +52,29 @@ export function createItemInDiv(
   itemDiv.id = `itemDiv${item.id}`;
   itemDiv.insertAdjacentHTML(
     "afterbegin",
-    `<input class='checkbox' type="checkbox" id="check${item.id}"/>
+    `<div class='checkbox-container'>
+    <label class='coolCheckbox bounce'>
+    <input class='checkbox' type="checkbox" id="check${item.id}"/>
+    <svg viewBox="0 0 21 21">
+            <polyline points="5 10.75 8.5 14.25 16 6"></polyline>
+        </svg>
+        </label>
+        </div>
     <div class='item-info' id="item-${item.id}-info">
         <h4 class='item-name'>${item.name}</h4>
+        <h4 class='project-id'>${item.parentID}</h4>
         <h4 class='due-date'>Due ${distanceInWordsToNow(
           new Date(item.dueDate),
           {
             addSuffix: true
           }
         )}</h4>
-        <h4 class='project-id'>${item.parentID}</h4>
       </div>`
   );
+
   //builds the expand button and adds it to the item Div
   let expand = document.createElement("button");
-  expand.textContent = "Expand";
+  expand.innerHTML = `<i class="fas fa-angle-down expand-icon"></i>`;
   expand.classList.add("expand");
   expand.id = `expand${item.id}`;
   itemDiv.appendChild(expand);
@@ -75,7 +83,7 @@ export function createItemInDiv(
   button.classList.add("delete");
   button.id = `item${item.id}`;
   button.classList.add("delete");
-  button.textContent = "Delete Item";
+  button.innerHTML = `<img class='close-icon' src="../static/close_small.png" alt="Close Icon">`;
   itemDiv.appendChild(button);
   itemsContainer.appendChild(itemDiv);
   // add event listener for checkbox
@@ -105,22 +113,24 @@ export function toggleExpandItem(item, expandToggleButton) {
   console.log("Inside the expandItem");
   console.log("Current item follows in a table:");
   console.table(item);
-  let itemInfoDiv = document.querySelector(`#item-${item.id}-info`);
+  let parent = document.querySelector(`#itemDiv${item.id}`);
+  let expandDiv = document.querySelector(`#expand${item.id}`);
   let expandedInfo;
   //toggle button text
-  expandToggleButton.textContent == "Collapse"
-    ? (expandToggleButton.textContent = "Expand")
-    : (expandToggleButton.textContent = "Collapse");
+  expandToggleButton.classList.contains("fa-rotate-180")
+    ? expandToggleButton.classList.remove("fa-rotate-180")
+    : expandToggleButton.classList.add("fa-rotate-180");
   //remove or append extra info depending on it's existence
   if (document.querySelector(`#expanded-info-${item.id}`)) {
     expandedInfo = document.querySelector(`#expanded-info-${item.id}`);
-    itemInfoDiv.removeChild(expandedInfo);
+    parent.removeChild(expandedInfo);
   } else {
     expandedInfo = document.createElement("div");
     expandedInfo.id = `expanded-info-${item.id}`;
-    expandedInfo.innerHTML = `<h4> Description </h4><p>${item.description}</p>`;
-    itemInfoDiv.appendChild(expandedInfo);
-    console.table(itemInfoDiv);
+    expandedInfo.classList.add("expanded-info");
+    expandedInfo.innerHTML = `<h4 class='expanded-info-header'>Description</h4><p class='expanded-info-body'>${item.description}</p>`;
+    parent.insertBefore(expandedInfo, expandDiv);
+    console.table(expandDiv);
   }
 }
 
