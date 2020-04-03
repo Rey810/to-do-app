@@ -36,14 +36,11 @@ const projectFactory = (id, itemsOfProject = []) => {
 };
 export let itemsArray = [];
 let defaultProject = projectFactory("default");
+export let projectsArray = [defaultProject];
 window.onload = loadData();
 
-//var is used to declare projectsArray globally so that it's available in loadData()
-//the projectsArray which the localStorage adds to will now include the defaultProject
-export var projectsArray = [defaultProject];
-
-//get local storage projects and items
 function loadData() {
+  //get local storage projects and items
   if (localStorage.getItem("projects")) {
     projectsArray = JSON.parse(localStorage.getItem("projects"));
     DOMstuff.createProject(projectsArray);
