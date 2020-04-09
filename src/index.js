@@ -1,1 +1,2 @@
-var functionality = require("./functionality");
+const functionality = require('./functionality');
+const menuControl = require('./util/menu');

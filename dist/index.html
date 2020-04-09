@@ -10,12 +10,19 @@
       rel="stylesheet"
       type="text/css"
     />
+    <link
+    href="https://fonts.googleapis.com/css?family=Montserrat:100,300,400,700,900
+    rel="stylesheet">
     <script
       src="https://kit.fontawesome.com/31038529b5.js"
       crossorigin="anonymous"
     ></script>
   </head>
   <body>
+    <header>
+      <h1>Do Stuff</h1>
+      <button id="menu" class="menu mobile">MENU</button>
+    </header>
     <section id="projects-container">
       <h1>Projects</h1>
       <div id="all-projects">
@@ -23,6 +30,26 @@
       </div>
       <div id="new-project-container">
         <button id="create-new-project">New Project</button>
+      </div>
+    </section>
+
+    <section id="menu-overlay" class="hidden">
+      <h1 id="menu-header">MENU</h1>
+      <div id="close">
+        <i class="far fa-times-circle"></i>
+      </div>
+
+      <div id="menu-options">
+        <div id="theme">
+          <h1>Theme</h1>
+        </div>
+      </div>
+
+      <div id="menu-social">
+        <i class="fab fa-twitter"></i>
+        <i class="fab fa-github"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-facebook-square"></i>
       </div>
     </section>
 
