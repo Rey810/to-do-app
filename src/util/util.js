@@ -24,18 +24,18 @@ export function toggleActiveClass(
 export function newListener(classOrID, typeOfListener, funct) {
   console.info('Inside newListener');
   let node = document.querySelector(`${classOrID}`);
-  console.log(node);
+  console.log('node:', node);
   node.addEventListener(typeOfListener, funct);
   console.log(`Event listener added to ${node.id}`);
 }
 
 export function displayProjectItems(project) {
   console.info(`Inside displayProjectItems for ${project.id} project`);
-  console.log(itemsArray);
+  console.log('total items array', itemsArray);
   DOMstuff.createItemsContainer();
   //this will contain only the items with an ID matching that of the selected project
   let filteredArray = itemsArray.filter((item) => item.parentID == project.id);
-  console.table(filteredArray);
+  console.table(`filtered array for ${project}`, filteredArray);
   //clear DOM then create the right items
   let itemsContainer = document.querySelector('#item-container');
   itemsContainer.innerHTML = '';
@@ -48,6 +48,7 @@ export function createItemInDiv(
 ) {
   //create the div that will hold an item
   console.info('Inside the createItemInDiv');
+  console.log('itemsArray');
   console.table(itemsArray);
   let itemDiv = document.createElement('div');
   itemDiv.classList.add('item');
@@ -101,7 +102,7 @@ export function createItemInDiv(
 }
 
 export function toggleItemCompletion(div, item) {
-  console.log(div, item);
+  console.log('div', div, 'item', item);
   if (item.completed) {
     item.completed = false;
     div.classList.remove('completed');
@@ -114,7 +115,7 @@ export function toggleItemCompletion(div, item) {
 export function toggleExpandItem(item, expandToggleButton) {
   console.log('Inside the expandItem');
   console.log('Current item follows in a table:');
-  console.table(item);
+  console.table('item:', item);
   let parent = document.querySelector(`#itemDiv${item.id}`);
   let expandDiv = document.querySelector(`#expand${item.id}`);
   let expandedInfo;
@@ -132,7 +133,7 @@ export function toggleExpandItem(item, expandToggleButton) {
     expandedInfo.classList.add('expanded-info');
     expandedInfo.innerHTML = `<h4 class='expanded-info-header'>Description</h4><p class='expanded-info-body'>${item.description}</p>`;
     parent.insertBefore(expandedInfo, expandDiv);
-    console.table(expandDiv);
+    console.table('expandDiv:', expandDiv);
   }
 }
 
@@ -193,13 +194,14 @@ export function createProjectHeader(project) {
   //hide all projects
   console.log('Inside createProjectHeader');
   let projectsContainer = document.querySelector('#projects-container');
+  let header = document.getElementsByTagName('header')[0];
   projectsContainer.style.display = 'none';
-  document.body.insertAdjacentHTML(
-    'afterbegin',
+  header.insertAdjacentHTML(
+    'afterend',
     `
-    <div class="project-header-container"><i id="back-icon" class="fas fa-angle-down expand-icon fa-rotate-90"></i><h1 class="project-header" id="project-header-${project.id}">${project.id}</h1><section id="create-new-item-container">
-      <button id="new-item">New Item</button>
-    </section></div>
+    <div class="project-header-container"><div id="back-icon"><i class="fas fa-angle-down expand-icon fa-rotate-90"></i></div><h1 class="project-header" id="project-header-${project.id}">${project.id}</h1></div><section id="create-new-item-container">
+    <button id="new-item">New Item</button>
+    </section>
     `
   );
   //New Item button
@@ -209,10 +211,19 @@ export function createProjectHeader(project) {
   backIcon.addEventListener('click', goBack);
 }
 
-function goBack() {
+export function goBack() {
   console.info('Inside goback');
-  let header = document.querySelector('.project-header-container');
-  document.body.removeChild(header);
-  document.querySelector('#projects-container').style.display = 'unset';
-  document.body.removeChild(document.querySelector('#item-container'));
+  const projectHeader = document.querySelector('.project-header-container');
+  const newItemCont = document.querySelector('#create-new-item-container');
+  const itemsContainer = document.querySelector('#item-container');
+  document.body.removeChild(projectHeader);
+  document.body.removeChild(newItemCont);
+  document.body.removeChild(itemsContainer);
+  document.querySelector('#projects-container').style.display = 'flex';
+}
+
+export function removeNewItemForm() {
+  const itemForm = document.querySelector('#new-item-form');
+  const formContainer = document.querySelector('#create-new-item-container');
+  formContainer.removeChild(itemForm);
 }

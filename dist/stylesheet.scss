@@ -1,12 +1,29 @@
 :root {
+  // general colors
   --primary-text-color: black;
   --secondary-text-color: #000000b3;
   --warning-color: #dd2f2f;
   --aux-color: #f0f0f0;
+  // project colors
+  // item colors
   --selected-project-button-color: #296eae;
   --selected-project-text-color: #ffffffeb;
   --create-button-color: #173b5e;
   --create-button-text-color: #ffffffeb;
+  // error messages
+  --success: #32b732cc;
+  --error: #ea4444;
+
+  // todoist colors
+  --bg-color: #ffa;
+  --button-color: #e44232;
+  --button-hover-color: #ee5244;
+
+  // dark mode
+  --bg-color: rgb(26, 27, 28);
+  --secondary-bg-color: rgb(37, 129, 124)
+  --primary-text-color: rgb(37, 129, 124);
+
 }
 
 * {
@@ -35,6 +52,10 @@ h4 {
 
 header {
   text-align: center;
+  h1 {
+    margin: 1em;
+font-size: 1.4em;
+  }
 }
 
 /////////////////
@@ -111,15 +132,21 @@ header {
   flex-direction: column;
   h1 {
     text-align: center;
+    margin-bottom: 1em;
   }
   #all-projects {
     margin: 0 auto;
+  }
+  button {
+        height: 2em;
+        padding: 0.5em;
   }
 }
 
 .project-container {
   display: grid;
   grid-template-columns: 75% auto;
+  margin: 1em 0;
   button {
     width: auto;
   }
@@ -127,6 +154,15 @@ header {
 
 #new-project-container {
   margin: 1em auto 0 auto;
+  button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 1em;
+    padding: 2em;
+    border-radius: 50%;
+    width: auto;
+  }
 }
 
 button {
@@ -150,6 +186,18 @@ button {
 /////////////////
 ///item cards///
 ///////////////
+#create-new-item-container{
+    button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 1em;
+    padding: 2em;
+    border-radius: 50%;
+    width: auto;
+  }
+}
+
 .completed {
   opacity: 50%;
 }
@@ -199,6 +247,7 @@ button {
   grid-column: 6;
   grid-row: 1;
   background-color: var(--warning-color);
+  display: flex;
 }
 
 .due-date,
@@ -347,13 +396,45 @@ input:valid {
 }
 
 .active-error {
-  background: #ea4444;
+  background: var(--error);
   padding: 1em;
   color: white;
 }
 
 .active-success {
-  background: #32b732cc;
+  background: var(--success);
   padding: 1em;
   color: white;
+}
+
+
+#new-item-form {
+  display: flex;
+flex-direction: column;
+fieldset { 
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="button"]:disabled {
+  opacity: 50%;
+}
+
+}
+
+///////////////////////////
+//////project display/////
+/////////////////////////
+
+.project-header-container {
+  display: grid;
+  grid-template-columns: 10% auto 10%;
+}
+
+.project-header {
+  text-align: center;
+}
+
+#back-icon {
+  display: flex;
 }

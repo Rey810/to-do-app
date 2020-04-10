@@ -145,6 +145,7 @@ const createToDoItem = () => {
   console.groupEnd();
   console.time("Time to do DOM stuff for a new item's creation");
   util.displayProjectItems(project);
+  util.removeNewItemForm();
   console.timeEnd("Time to do DOM stuff for a new item's creation");
 };
 

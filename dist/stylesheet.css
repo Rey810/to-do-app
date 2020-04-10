@@ -7,6 +7,8 @@
   --selected-project-text-color: #ffffffeb;
   --create-button-color: #173b5e;
   --create-button-text-color: #ffffffeb;
+  --success: #32b732cc;
+  --error: #ea4444;
 }
 
 * {
@@ -443,14 +445,31 @@ input:valid {
 }
 
 .active-error {
-  background: #ea4444;
+  background: var(--error);
   padding: 1em;
   color: white;
 }
 
 .active-success {
-  background: #32b732cc;
+  background: var(--success);
   padding: 1em;
   color: white;
+}
+
+.project-header-container {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 10% auto 10%;
+      grid-template-columns: 10% auto 10%;
+}
+
+.project-header {
+  text-align: center;
+}
+
+#back-icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 /*# sourceMappingURL=stylesheet.css.map */

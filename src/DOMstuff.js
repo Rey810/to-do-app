@@ -1,6 +1,6 @@
 import * as util from './util/util.js';
 import { deleteProjectFromArray } from './functionality';
-import formValidation from './util/form_validation';
+import { projectValidation, itemValidation } from './util/form_validation';
 
 export const DOMstuff = {
   //the form for to-do item info
@@ -10,29 +10,42 @@ export const DOMstuff = {
     newItemForm.id = 'new-item-form';
     newItemForm.insertAdjacentHTML(
       'afterbegin',
-      `
-    <input id="item-name" type="text" placeholder="Enter a title" />
-    <input
-      id="item-description"
-      type="text"
-      placeholder="What do you need to do?"
-    />
-    <input type="date" id="item-due-date" value="2020-03-27" min="2020-03-25" />
-    <input type="radio" name="priority" id="low" checked />
-    <input type="radio" name="priority" id="medium" />
-    <input type="radio" name="priority" id="high" />
-    <button id="create">Create an Item</button>`
+      ` <form novalidate>
+        <fieldset>
+          <input id="item-name" type="text" placeholder="Enter a title" required minlength='2' pattern="[a-zA-Z]*"/>
+          <span id='item-name-error'></span>
+        </fieldset>
+        <fieldset>
+          <input id="item-description" type="text" placeholder="What do you need to do?" required minlength='15'/>
+          <span id='item-description-error'><span>
+        </fieldset>
+        <fieldset>
+          <input type="date" id="item-due-date" value="2020-03-27" min="2020-03-25" required />
+          <span id='item-due-date-error'></span>
+        </fieldset>
+        <fieldset>
+          <input type="radio" name="priority" id="low" checked />
+          <input type="radio" name="priority" id="medium" />
+          <input type="radio" name="priority" id="high" />
+        </fieldset>
+        <span id='success-message'></span>
+        <button type='button' id="create" disabled>Create an Item</button>
+        </form>`
     );
     document
       .querySelector('#create-new-item-container')
       .appendChild(newItemForm);
-    document.querySelector('#item-due-date').valueAsDate = new Date();
+    /// sets date displayed in the item form
+    let date = new Date();
+    date.setDate(date.getDate() + 1);
+    document.querySelector('#item-due-date').valueAsDate = date;
+    itemValidation();
     console.log('Form created');
   },
 
   //this will hold all the items
   createItemsContainer: () => {
-    console.info('Inside the DOMstuff.displayToDoItems');
+    console.info('Inside the DOMstuff.createItemsContainer');
     let itemsContainer;
     console.group('Checks for item container and creates if necessary');
     //creates a container for the item if it doesn't already exist
@@ -117,7 +130,7 @@ export const DOMstuff = {
     util.newListener('#cancel-new-project', 'click', () => {
       util.cancelNewProject(newProjectForm, newProjectContainer);
     });
-    formValidation();
+    projectValidation();
   },
 
   addProject: (project) => {
@@ -146,7 +159,7 @@ export const DOMstuff = {
     let button = document.createElement('button');
     button.id = `project${util.uniqueNumber()}`;
     button.classList.add('delete');
-    button.textContent = 'Delete Project';
+    button.innerHTML = `<img class='close-icon' src="../static/close_small.png" alt="Close Icon">`;
     projectContainer.appendChild(button);
     util.newListener(`#${button.id}`, 'click', () => {
       util.removeItemFromDOM(
