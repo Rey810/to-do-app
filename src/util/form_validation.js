@@ -30,22 +30,14 @@ export function projectValidation() {
 
 export function itemValidation() {
   const form = document.getElementsByTagName('form')[0];
-
   const itemName = document.querySelector('#item-name');
-  const itemNameError = document.querySelector('#item-name-error');
-
   const itemDescr = document.querySelector('#item-description');
-  const itemDescrError = document.querySelector('#item-description-error');
-
   const itemDate = document.querySelector('#item-due-date');
-  const itemDateError = document.querySelector('#item-due-date-error');
-
   const inputs = [itemName, itemDescr, itemDate];
-
   const createItemButton = document.querySelector('#create');
-
   const successMsgContainer = document.querySelector('#success-message');
 
+  // adds event listeners to the form inputs
   inputs.map((input) => {
     input.addEventListener('input', () => validate(input));
   });
@@ -69,6 +61,7 @@ export function itemValidation() {
       createItemButton.disabled = true;
     } else {
       anInput.nextElementSibling.classList.remove('active-error');
+      // the next element sibling is the <span> which contains the error msg
       anInput.nextElementSibling.innerHTML = '';
       if (form.checkValidity()) {
         createItemButton.disabled = false;

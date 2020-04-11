@@ -15,6 +15,7 @@ export function toggleActiveClass(
   projects = [...document.querySelectorAll('.projects')]
 ) {
   console.info('Inside the toggleActiveClass');
+  console.log({ selectedProject });
   console.log(`${selectedProject.id} project was selected`);
   //console.table(projects, ["id"]);
   projects.map((project) => project.classList.remove('active'));
@@ -165,9 +166,8 @@ function addProjectButton(buttonID, parentNode) {
 }
 
 export function activateDefaultProject() {
-  let defaultProject = document.querySelector('#default');
-  defaultProject.classList.add('active');
-  //displayProjectItems(defaultProject);
+  const defaultProject = document.querySelector('#default');
+  toggleActiveClass(defaultProject);
 }
 
 export function cancelNewProject(aNewProjectForm, aNewProjectContainer) {

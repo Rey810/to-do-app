@@ -12,7 +12,7 @@ export const DOMstuff = {
       'afterbegin',
       ` <form novalidate>
         <fieldset>
-          <input id="item-name" type="text" placeholder="Enter a title" required minlength='2' pattern="[a-zA-Z]*"/>
+          <input id="item-name" type="text" placeholder="Enter a title" required minlength='2' pattern="[a-zA-Z\\s]*"/>
           <span id='item-name-error'></span>
         </fieldset>
         <fieldset>
@@ -118,7 +118,7 @@ export const DOMstuff = {
     newProjectForm.insertAdjacentHTML(
       'afterbegin',
       `<form novalidate>
-      <input type="text" id="project-name" placeholder="New Project" required minlength='5' maxlength='15' pattern="[a-zA-Z]*">
+      <input type="text" id="project-name" placeholder="New Project" required minlength='5' maxlength='15' pattern="[a-zA-Z\\s]*">
       <span id='project-name-error'></span>
       <div class='new-project-buttons-container'>
         <button id="submit-new-project" disabled>Add Project</button>
@@ -161,12 +161,17 @@ export const DOMstuff = {
     button.classList.add('delete');
     button.innerHTML = `<img class='close-icon' src="../static/close_small.png" alt="Close Icon">`;
     projectContainer.appendChild(button);
+
+    // listeners for the delete project button
     util.newListener(`#${button.id}`, 'click', () => {
+      // removes the project from DOM
       util.removeItemFromDOM(
         `#${projectContainer.id}`,
         `#${projectsContainer.id}`
       );
+      // removes the project from the projects array
       deleteProjectFromArray(project);
+      // adds the activated style to the default project
       util.activateDefaultProject();
     });
     //remove the active class from the other projects

@@ -178,16 +178,17 @@ export const deleteProjectFromArray = (projectToRemove) => {
   console.table(projectsArray);
   console.groupEnd();
 };
-// add event listeners to each project div that exists
+
+// add event listeners to the default project
+// stored projects will have their listeners added by DOMstuff.displayProjects(projectsArray)
+// in that fn, every stored project, except the default project will have a listener added
 {
-  const projects = [...document.querySelectorAll('.projects')];
-  projects.map((project) =>
-    project.addEventListener('click', () => {
-      util.toggleActiveClass(project);
-      util.createProjectHeader(project);
-      util.displayProjectItems(project);
-    })
-  );
+  const defaultProject = document.querySelector('#default');
+  defaultProject.addEventListener('click', () => {
+    util.toggleActiveClass(defaultProject);
+    util.createProjectHeader(defaultProject);
+    util.displayProjectItems(defaultProject);
+  });
 }
 
 // New Project button
